@@ -29,7 +29,7 @@ NAMELIST *GetNLItem(int curitem) {
         i++;
         nl = nl->next;
     }
-    return (nl);
+    return nl;
 }
 
 void ClearNL() {

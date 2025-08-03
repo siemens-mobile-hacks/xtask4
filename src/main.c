@@ -5,9 +5,10 @@
 #include <xtask_ipc.h>
 #include "nl.h"
 #include "csm.h"
-#include "swaper.h"
+#include "csm_list.h"
+#include "csm_utils.h"
+#include "idle_hook.h"
 #include "config_loader.h"
-#include "csmlist.h"
 
 #ifdef NEWSGOLD
     #define USE_ONE_KEY
@@ -31,10 +32,7 @@ extern int CFG_SHOW_DAEMONS, CFG_SHOW_IDLE;
 
 extern char UI_HDR_TXT[32];
 
-CSM_DESC IDLE_CSM_DESC;
 CSM_RAM *CSM_UNDER_IDLE;
-int (*IDLE_OnMessage)(CSM_RAM *, GBS_MSG *);
-void (*IDLE_OnClose)(CSM_RAM *);
 
 GBSTMR TMR_START;
 volatile int SHOW_LOCK;
@@ -264,15 +262,13 @@ int KeyHook(int submsg, int msg) {
                     MODE_RED = 0; //Release after longpress
                     return KEYHOOK_NEXT;
                 }
-                else
-                //Release after short press
-                {
+                else { //Release after short press
                     if (CFG_RED_BUTTON_MODE == 1) {
                         GBS_SendMessage(MMI_CEPID, KEY_DOWN, RIGHT_SOFT);
                     }
                     else {
                         if (!CSM_ID) {
-                            CSMtoTop(CSM_root()->idle_id, -1);
+                            CSM_MoveToTop(CSM_root()->idle_id, -1);
                         }
                     }
                 }
@@ -346,7 +342,10 @@ int KeyHook(int submsg, int msg) {
         }
         if (CSM_ID) {
             if (msg == KEY_UP) {
-                GBS_SendMessage(MMI_CEPID, KEY_DOWN, ENTER_BUTTON);
+                MAIN_CSM *csm = (MAIN_CSM*)FindCSMbyID(CSM_ID);
+                if (csm && IsGuiOnTop(csm->gui_id)) {
+                    GBS_SendMessage(MMI_CEPID, KEY_DOWN, ENTER_BUTTON);
+                }
             }
             return KEYHOOK_BREAK;
         }
@@ -374,11 +373,11 @@ int KeyHook(int submsg, int msg) {
                         return KEYHOOK_BREAK;
                     }
                     if (CFG_ENABLE_LONG_PRESS == 2) {
-                        CSMtoTop(CSM_root()->idle_id, -1);
+                        CSM_MoveToTop(CSM_root()->idle_id, -1);
                         return KEYHOOK_BREAK;
                     }
                     if (CFG_ENABLE_LONG_PRESS == 4) {
-                        CSMtoTop(CSM_root()->idle_id, -1);
+                        CSM_MoveToTop(CSM_root()->idle_id, -1);
                         KbdLock();
                         return KEYHOOK_BREAK;
                     }
@@ -470,7 +469,7 @@ L1:
                             }
                             if (!IsCalling() && !SHOW_LOCK) {
                                 if ((CSM_root()->csm_q->csm.last != data) || IsGuiOnTop(idlegui_id)) {
-                                    CSMtoTop((int)(ipc->data), -1);
+                                    CSM_MoveToTop((int)(ipc->data), -1);
                                 }
                             }
                         break;
@@ -479,7 +478,7 @@ L1:
                                 break;
                             }
                             if (!IsCalling()) {
-                                CSMtoTop(CSM_root()->idle_id, -1);
+                                CSM_MoveToTop(CSM_root()->idle_id, -1);
                             }
                         break;
                         case IPC_XTASK_LOCK_SHOW:
@@ -499,20 +498,25 @@ L1:
     }
     if (CALLHIDE_MODE) {
         if ((IsGuiOnTop(icgui_id))) {
-            CSMtoTop(CSM_root()->idle_id, ((CSM_RAM*)(CSM_root()->csm_q->csm.last))->id);
+            CSM_MoveToTop(CSM_root()->idle_id, ((CSM_RAM*)(CSM_root()->csm_q->csm.last))->id);
             CALLHIDE_MODE = 0;
         }
     }
     return csm_result;
 }
 
-void OnClose(CSM_RAM *data) {
-    // extern void seqkill(void *data, void (*next_in_seq)(CSM_RAM *), void *data_to_kill, void *seqkiller);
-    // extern void *ELF_BEGIN;
+void KillELF() {
+    LockSched();
     GBS_DelTimer(&TMR_START);
-    RemoveKeybMsgHook((void*)KeyHook);
+    RemoveKeybMsgHook(KeyHook);
+    IDLE_DisableHook();
+    UnlockSched();
     SUBPROC(kill_elf);
-    // seqkill(data, old_icsm_onClose, &ELF_BEGIN, SEQKILLER_ADR());
+}
+
+void OnClose(CSM_RAM *data) {
+    IDLE_OnClose(data);
+    KillELF();
 }
 
 void DoSplices(GBSTMR *) {
@@ -526,13 +530,7 @@ void DoSplices(GBSTMR *) {
         if (CFG_ENABLE_HELLO_MSG) {
             ShowMSG(1, (int)"XTask3 установлен!");
         }
-        CSM_RAM *icsm = FindCSMbyID(CSM_root()->idle_id);
-        memcpy(&IDLE_CSM_DESC, icsm->constr, sizeof(IDLE_CSM_DESC));
-        IDLE_OnClose = IDLE_CSM_DESC.onClose;
-        IDLE_OnMessage = IDLE_CSM_DESC.onMessage;
-        IDLE_CSM_DESC.onClose = OnClose;
-        IDLE_CSM_DESC.onMessage = OnMessage;
-        icsm->constr = &IDLE_CSM_DESC;
+        IDLE_EnableHook(OnMessage, OnClose);
         CSM_UNDER_IDLE = GetUnderIdleCSM(); //Ищем idle_dialog
     }
     UnlockSched();

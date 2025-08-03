@@ -2,7 +2,7 @@
 #include "ui/ui.h"
 #include "nl.h"
 #include "csm.h"
-#include "csmlist.h"
+#include "csm_list.h"
 #include "config_loader.h"
 
 extern int REALD_COUNT;

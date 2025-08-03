@@ -1,9 +1,10 @@
 #include <swilib.h>
 #include <string.h>
+#include "menu_options.h"
 #include "menu_bookmarks.h"
 #include "../nl.h"
 #include "../csm.h"
-#include "../swaper.h"
+#include "../csm_utils.h"
 
 extern int REALD_COUNT, NSD_COUNT;
 extern int SHOW_DAEMONS;
@@ -15,7 +16,7 @@ static HEADER_DESC HEADER_D = {{0, 0, 0, 0}, NULL, (int)UI_HDR_TXT, LGP_NULL};
 static const int SOFTKEYS[] = {SET_LEFT_SOFTKEY, SET_RIGHT_SOFTKEY, SET_MIDDLE_SOFTKEY};
 
 static const SOFTKEY_DESC SOFTKEYS_D[] = {
-    {0x0018, 0x0000, (int)"Idle"},
+    {0x0018, 0x0000, (int)"Options"},
     {0x0001, 0x0000, (int)"Back"},
     {0x003D, 0x0000, (int)LGP_DOIT_PIC}
 };
@@ -51,7 +52,6 @@ static void ItemProc(void *data, int item_n, void *unk) {
 
 static int OnKey(GUI *gui, GUI_MSG *msg) {
     MAIN_CSM *csm = MenuGetUserPointer(gui);
-    NAMELIST *nl = GetNLItem(GetCurMenuItem(gui));
     if (msg->gbsmsg->msg == KEY_DOWN) {
         int submess = msg->gbsmsg->submess;
         if (submess == '0') {
@@ -65,31 +65,22 @@ static int OnKey(GUI *gui, GUI_MSG *msg) {
         }
         switch (submess) {
             case LEFT_BUTTON:
-                if (REALD_COUNT + NSD_COUNT > 0) {
-                    submess = ((CSM_RAM*)(nl->p))->id;
-                    if (submess != CSM_root()->idle_id) {
-                        CloseCSM(submess);
-                    }
-                }
+                CSM_Close(GetCurMenuItem(gui));
                 return -1;
             case '#':
-                if (REALD_COUNT + NSD_COUNT > 0) {
-                    submess = ((CSM_RAM*)(nl->p))->id;
-                    if (submess != CSM_root()->idle_id) {
-                        CloseCSM(submess);
-                    }
-                }
+                CSM_Close(GetCurMenuItem(gui));
                 return 0;
         case '*':
             SHOW_DAEMONS = !SHOW_DAEMONS;
             RefreshGUI();
             return 0;
         case LEFT_SOFT:
-            CSMtoTop(CSM_root()->idle_id, -1);
-            return 1;
+            MenuOptions_Create(csm);
+            return -1;
         case ENTER_BUTTON:
+            NAMELIST *nl = GetNLItem(GetCurMenuItem(gui));
             if (!nl->is_daemon) {
-                CSMtoTop(((CSM_RAM*)(nl->p))->id, -1);
+                CSM_MoveToTop(((CSM_RAM*)(nl->p))->id, -1);
             }
             return 1;
         case RIGHT_SOFT:
@@ -109,7 +100,7 @@ void GHook(GUI *gui, int cmd) {
             SetCursorToMenuItem(gui, dialogs - 1);
         }
     } else if (cmd == 0x09) { //unfocus
-        ClearNL();
+        // ClearNL();
     }
 }
 
