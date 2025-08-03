@@ -1,5 +1,6 @@
 #include <swilib.h>
 #include <string.h>
+#include <stdio.h>
 #include "menu_options.h"
 #include "menu_bookmarks.h"
 #include "../nl.h"
@@ -10,8 +11,9 @@ extern int REALD_COUNT, NSD_COUNT;
 extern int SHOW_DAEMONS;
 extern int GetNumberOfDialogs();
 
-char UI_HDR_TXT[32];
-static HEADER_DESC HEADER_D = {{0, 0, 0, 0}, NULL, (int)UI_HDR_TXT, LGP_NULL};
+char EXTRA_HEADER[16];
+
+static HEADER_DESC HEADER_D = {{0, 0, 0, 0}, NULL, (int)"XTask4", (int)EXTRA_HEADER};
 
 static const int SOFTKEYS[] = {SET_LEFT_SOFTKEY, SET_RIGHT_SOFTKEY, SET_MIDDLE_SOFTKEY};
 
@@ -123,4 +125,9 @@ int UI_Create(MAIN_CSM *csm) {
 
     int selected_item = (REALD_COUNT > 1) ? 1 : 0;
     return CreateMenu(0, 0, &MENU_D, &HEADER_D, selected_item, REALD_COUNT, csm, 0);
+}
+
+void UI_SetExtraHeader(int dialogs) {
+    // strcpy(EXTRA_HEADER, s);
+    sprintf(EXTRA_HEADER, "%d", dialogs);
 }

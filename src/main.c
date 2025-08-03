@@ -9,6 +9,7 @@
 #include "csm_utils.h"
 #include "idle_hook.h"
 #include "config_loader.h"
+#include "ui/ui.h"
 
 #ifdef NEWSGOLD
     #define USE_ONE_KEY
@@ -228,9 +229,8 @@ int GetNumberOfDialogs() {
                 }
             }
         }
-    }
-    while ((icsm = icsm->next));
-    sprintf(UI_HDR_TXT, "XTask3.0 : %d dialogs", count);
+    } while ((icsm = icsm->next));
+    UI_SetExtraHeader(count);
     REALD_COUNT = count - NSD_COUNT;
     return count;
 }
