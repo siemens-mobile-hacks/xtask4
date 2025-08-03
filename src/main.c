@@ -1,3 +1,4 @@
+#include <signal.h>
 #include <swilib.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -506,17 +507,15 @@ L1:
 }
 
 void KillELF() {
-    LockSched();
     GBS_DelTimer(&TMR_START);
     RemoveKeybMsgHook(KeyHook);
     IDLE_DisableHook();
-    UnlockSched();
-    SUBPROC(kill_elf);
+    kill_elf();
 }
 
 void OnClose(CSM_RAM *data) {
     IDLE_OnClose(data);
-    KillELF();
+    SUBPROC(KillELF);
 }
 
 void DoSplices(GBSTMR *) {

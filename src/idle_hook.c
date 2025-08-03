@@ -20,7 +20,9 @@ void IDLE_EnableHook(on_message_t on_message, on_close_t on_close) {
 
 void IDLE_DisableHook() {
     CSM_RAM *idle = FindCSMbyID(CSM_root()->idle_id);
-    OLD_IDLE_CSM_DESC->onMessage = IDLE_OnMessage;
-    OLD_IDLE_CSM_DESC->onClose = IDLE_OnClose;
-    idle->constr = OLD_IDLE_CSM_DESC;
+    if (idle) {
+        OLD_IDLE_CSM_DESC->onMessage = IDLE_OnMessage;
+        OLD_IDLE_CSM_DESC->onClose = IDLE_OnClose;
+        idle->constr = OLD_IDLE_CSM_DESC;
+    }
 }
