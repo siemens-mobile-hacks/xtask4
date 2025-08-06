@@ -54,47 +54,47 @@ __root int CFG_SHOW_IDLE = 1;
 
 __root CFG_HDR cfghdr_10_1 = {CFG_STR_WIN1251, "Bookmark 1 name", 1, 31};
 __root char BM1NAME[32] = "";
-__root CFG_HDR cfghdr_10_2 = {CFG_STR_UTF8, "Bookmark 1 file", 3, 127};
+__root CFG_HDR cfghdr_10_2 = {CFG_STR_UTF8, "Bookmark 1 value", 3, 127};
 __root char BM1FILE[128] = "";
 
 __root CFG_HDR cfghdr10_3 = {CFG_STR_WIN1251, "Bookmark 2 name", 1, 31};
 __root char BM2NAME[32] = "";
-__root CFG_HDR cfghdr10_4 = {CFG_STR_UTF8, "Bookmark 2 file", 3, 127};
+__root CFG_HDR cfghdr10_4 = {CFG_STR_UTF8, "Bookmark 2 value", 3, 127};
 __root char BM2FILE[128] = "";
 
 __root CFG_HDR cfghdr10_5 = {CFG_STR_WIN1251, "Bookmark 3 name", 1, 31};
 __root char BM3NAME[32] = "";
-__root CFG_HDR cfghdr10_6 = {CFG_STR_UTF8, "Bookmark 3 file", 3, 127};
+__root CFG_HDR cfghdr10_6 = {CFG_STR_UTF8, "Bookmark 3 value", 3, 127};
 __root char BM3FILE[128] = "";
 
 __root CFG_HDR cfghdr10_7 = {CFG_STR_WIN1251, "Bookmark 4 name", 1, 31};
 __root char BM4NAME[32] = "";
-__root CFG_HDR cfghdr10_8 = {CFG_STR_UTF8, "Bookmark 4 file", 3, 127};
+__root CFG_HDR cfghdr10_8 = {CFG_STR_UTF8, "Bookmark 4 value", 3, 127};
 __root char BM4FILE[128] = "";
 
 __root CFG_HDR cfghdr10_9 = {CFG_STR_WIN1251, "Bookmark 5 name", 1, 31};
 __root char BM5NAME[32] = "";
-__root CFG_HDR cfghdr10_10 = {CFG_STR_UTF8, "Bookmark 5 file", 3, 127};
+__root CFG_HDR cfghdr10_10 = {CFG_STR_UTF8, "Bookmark 5 value", 3, 127};
 __root char BM5FILE[128] = "";
 
 __root CFG_HDR cfghdr10_11 = {CFG_STR_WIN1251, "Bookmark 6 name", 1, 31};
 __root char BM6NAME[32] = "";
-__root CFG_HDR cfghdr10_12 = {CFG_STR_UTF8, "Bookmark 6 file", 3, 127};
+__root CFG_HDR cfghdr10_12 = {CFG_STR_UTF8, "Bookmark 6 value", 3, 127};
 __root char BM6FILE[128] = "";
 
 __root CFG_HDR cfghdr10_13 = {CFG_STR_WIN1251, "Bookmark 7 name", 1, 31};
 __root char BM7NAME[32] = "";
-__root CFG_HDR cfghdr10_14 = {CFG_STR_UTF8, "Bookmark 7 file", 3, 127};
+__root CFG_HDR cfghdr10_14 = {CFG_STR_UTF8, "Bookmark 7 value", 3, 127};
 __root char BM7FILE[128] = "";
 
 __root CFG_HDR cfghdr10_15 = {CFG_STR_WIN1251, "Bookmark 8 name", 1, 31};
 __root char BM8NAME[32] = "";
-__root CFG_HDR cfghdr10_16 = {CFG_STR_UTF8, "Bookmark 8 file", 3, 127};
+__root CFG_HDR cfghdr10_16 = {CFG_STR_UTF8, "Bookmark 8 value", 3, 127};
 __root char BM8FILE[128] = "";
 
 __root CFG_HDR cfghdr10_17 = {CFG_STR_WIN1251, "Bookmark 9 name", 1, 31};
 __root char BM9NAME[32] = "";
-__root CFG_HDR cfghdr10_18 = {CFG_STR_UTF8, "Bookmark 9 file", 3, 127};
+__root CFG_HDR cfghdr10_18 = {CFG_STR_UTF8, "Bookmark 9 value", 3, 127};
 __root char BM9FILE[128] = "";
 
 __CFG_END(0)
