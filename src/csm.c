@@ -11,7 +11,7 @@ extern int GetNumberOfDialogs();
 const int minus11 = -11;
 int CSM_ID;
 
-void OnCreate(CSM_RAM *data) {
+static void OnCreate(CSM_RAM *data) {
     MAIN_CSM *csm = (MAIN_CSM*)data;
     csm->csm.state = 0;
     csm->csm.unk1 = 0;

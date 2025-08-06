@@ -18,13 +18,20 @@
 
 typedef struct {
     CSM_RAM csm;
+#ifdef NEWSGOLD
     int unk1;
     int bearer;
     int gui_id;
     int unk2;
     int param_R1;
     int param_ZERO;
+#else
+    int bearer;
+    int gui_id;
+    int gui_id2;
+#endif
 } JAVAINTERFACE_CSM;
+
 
 extern int CFG_ENABLE_HELLO_MSG;
 extern char CFG_UNDER_IDLE_CONSTR[];
@@ -88,7 +95,7 @@ char *FindCSMName(CSM_RAM *csm) {
         return p + 9;
     } else {
         static char u[40];
-        sprintf(u, "Unknown %p!", desc);
+        sprintf(u, "Unknown %08X!", (uint32_t)desc);
         return u;
     }
 }
@@ -180,13 +187,6 @@ int GetNumberOfDialogs() {
 #else
           if (!strncmp_nocase(s,"Java",4))
 	  {
-	    typedef struct
-	    {
-	      CSM_RAM csm;
-	      int bearer;
-	      int gui_id;
-	      int gui_id2;
-	    }JAVAINTERFACE_CSM;
 	    int i=((JAVAINTERFACE_CSM *)icsm)->bearer;
 	    ws=AllocWS(64);
 	    switch(i)

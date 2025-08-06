@@ -36,11 +36,5 @@ const char *GetBookmarkValue(int id) {
 
 int ExecuteBookmark(int id) {
     const char *value = GetBookmarkValue(id);
-    if (value) {
-        if (strlen(value)) {
-            Sie_Exec_File(value);
-            return 1;
-        }
-    }
-    return 0;
+    return Sie_Exec_File(value);
 }

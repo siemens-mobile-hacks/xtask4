@@ -10,7 +10,7 @@ void ReadCSMList() {
     int size = 0;
     uint32_t err;
 
-    int fp = sys_open(CFG_CSM_LIST_PATH, A_ReadOnly + A_BIN, P_READ, &err);
+    int fp = sys_open(CFG_CSM_LIST_PATH, A_ReadOnly | A_BIN, P_READ, &err);
     if (fp != -1) {
         size = sys_read(fp, CSM_LIST_DATA, DATA_SIZE, &err);
         sys_close(fp, &err);
