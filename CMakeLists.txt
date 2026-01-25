@@ -7,12 +7,14 @@ include_directories("../libsie/src/include")
 link_libraries(crt crt_helper gcc c ft sie)
 file(GLOB_RECURSE SOURCES "src/*.c")
 
+add_definitions(-DSWILIB_MODERN)
+
 add_executable(XTask4_ELKA ${SOURCES})
 target_sdk_setup(XTask4_ELKA ELKA)
 target_link_directories(XTask4_ELKA PUBLIC "../libsie/build/lib/ELKA")
-target_compile_options(XTask4_ELKA BEFORE PUBLIC -std=c11 -Wall -Werror -DSWILIB_MODERN)
+target_compile_options(XTask4_ELKA BEFORE PUBLIC -std=c11 -Wall -Werror)
 
 add_executable(XTask4_NSG ${SOURCES})
 target_sdk_setup(XTask4_NSG NSG)
 target_link_directories(XTask4_NSG PUBLIC "../libsie/build/lib/ELKA")
-target_compile_options(XTask4_NSG BEFORE PUBLIC -std=c11 -Wall -Werror -DSWILIB_MODERN)
+target_compile_options(XTask4_NSG BEFORE PUBLIC -std=c11 -Wall -Werror)

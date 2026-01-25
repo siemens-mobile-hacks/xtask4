@@ -6,10 +6,10 @@
 #include <xtask_ipc.h>
 #include "nl.h"
 #include "csm.h"
+#include "config.h"
 #include "csm_list.h"
 #include "csm_utils.h"
 #include "idle_hook.h"
-#include "config_loader.h"
 #include "ui/ui.h"
 
 #ifdef NEWSGOLD
@@ -31,13 +31,6 @@ typedef struct {
     int gui_id2;
 #endif
 } JAVAINTERFACE_CSM;
-
-
-extern int CFG_ENABLE_HELLO_MSG;
-extern char CFG_UNDER_IDLE_CONSTR[];
-extern int CFG_ACTIVATION_STYLE, CFG_ACTIVATION_KEY, CFG_ENABLE_LONG_PRESS, CFG_RED_BUTTON_MODE;
-extern int CFG_ENABLE_LOCK;
-extern int CFG_SHOW_DAEMONS, CFG_SHOW_IDLE;
 
 extern char UI_HDR_TXT[32];
 
@@ -68,12 +61,12 @@ int MODE_ENTER;
 
 CSM_RAM *GetUnderIdleCSM(void) {
     CSM_DESC *UnderIdleDesc;
-    if (strlen(CFG_UNDER_IDLE_CONSTR) == 8) {
-        UnderIdleDesc = (CSM_DESC*)strtoul(CFG_UNDER_IDLE_CONSTR, 0, 0x10);
+    if (strlen(CFG.under_idle_constr) == 8) {
+        UnderIdleDesc = (CSM_DESC*)strtoul(CFG.under_idle_constr, 0, 0x10);
     }
     else {
         UnderIdleDesc = ((CSM_RAM*)(FindCSMbyID(CSM_root()->idle_id))->prev)->constr;
-        sprintf(CFG_UNDER_IDLE_CONSTR, "%08X", (uint32_t)UnderIdleDesc);
+        sprintf(CFG.under_idle_constr, "%08X", (uint32_t)UnderIdleDesc);
         SaveConfig();
     }
     LockSched();
@@ -130,7 +123,7 @@ int GetNumberOfDialogs() {
     icsm = CSM_UNDER_IDLE->next;
     do {
         if (icsm == ircsm) {
-            if (CFG_SHOW_IDLE) {
+            if (CFG.show_idle) {
                 ws = AllocWS(40);
                 wsprintf(ws, "IDLE Screen");
                 AddNL(ws, 0);
@@ -239,7 +232,7 @@ int GetNumberOfDialogs() {
 int KeyHook(int submsg, int msg) {
 #ifdef NEWSGOLD
     void *icsm = FindCSMbyID(CSM_root()->idle_id);
-    if ((submsg == RED_BUTTON) && (CFG_RED_BUTTON_MODE)) {
+    if ((submsg == RED_BUTTON) && (CFG.red_button_mode)) {
         if ((CSM_root()->csm_q->csm.last == icsm) || (IsCalling()))
         //(IsGuiOnTop(((int *)icsm)[DISPLACE_OF_IDLEGUI_ID/4]))
         {
@@ -264,7 +257,7 @@ int KeyHook(int submsg, int msg) {
                     return KEYHOOK_NEXT;
                 }
                 else { //Release after short press
-                    if (CFG_RED_BUTTON_MODE == 1) {
+                    if (CFG.red_button_mode == 1) {
                         GBS_SendMessage(MMI_CEPID, KEY_DOWN, RIGHT_SOFT);
                     }
                     else {
@@ -282,7 +275,7 @@ int KeyHook(int submsg, int msg) {
         }
     }
 #endif
-    if (CFG_ACTIVATION_STYLE == 3) {
+    if (CFG.activation_style == 3) {
         if (submsg != ENTER_BUTTON) {
             return KEYHOOK_NEXT;
         }
@@ -308,7 +301,7 @@ int KeyHook(int submsg, int msg) {
                 return KEYHOOK_BREAK;
             case LONG_PRESS:
                 MODE_ENTER = 1;
-                if (IsUnlocked() || CFG_ENABLE_LOCK) {
+                if (IsUnlocked() || CFG.enable_lock) {
                     CSM_Create();
                 }
                 MODE = 0;
@@ -316,7 +309,7 @@ int KeyHook(int submsg, int msg) {
             }
     }
     // * + # implementation
-    if ((CFG_ACTIVATION_STYLE == 2) && !(CSM_ID)) {
+    if ((CFG.activation_style == 2) && !(CSM_ID)) {
         if (msg == KEY_UP) {
             MODE = 0;
             return KEYHOOK_NEXT;
@@ -328,7 +321,7 @@ int KeyHook(int submsg, int msg) {
                     return (0);
                 case '#':
                     if (MODE == 1) {
-                        if (IsUnlocked() || CFG_ENABLE_LOCK) {
+                        if (IsUnlocked() || CFG.enable_lock) {
                             CSM_Create();
                         }
                         else MODE = 0;
@@ -337,8 +330,8 @@ int KeyHook(int submsg, int msg) {
                 }
             }
         }
-    if (CFG_ACTIVATION_STYLE < 2) {
-        if (submsg != CFG_ACTIVATION_KEY) {
+    if (CFG.activation_style < 2) {
+        if (submsg != CFG.activation_key) {
             return KEYHOOK_NEXT;
         }
         if (CSM_ID) {
@@ -353,7 +346,7 @@ int KeyHook(int submsg, int msg) {
         switch (msg) {
             case KEY_DOWN:
                 MODE = 0;
-                if (CFG_ACTIVATION_STYLE == 0) {
+                if (CFG.activation_style == 0) {
                     return KEYHOOK_BREAK;
                 }
                 else {
@@ -363,29 +356,29 @@ int KeyHook(int submsg, int msg) {
                 if (MODE == 1) {
                     //Release after longpress
                     MODE = 0;
-                    if ((CFG_ACTIVATION_STYLE == 1) || (CFG_ENABLE_LONG_PRESS == 3)) {
+                    if ((CFG.activation_style == 1) || (CFG.enable_long_press == 3)) {
                         //Launch on LongPress or Extra on LP - Launch
-                        if (IsUnlocked() || CFG_ENABLE_LOCK) {
+                        if (IsUnlocked() || CFG.enable_lock) {
                             CSM_Create();
                         }
                         return KEYHOOK_BREAK;
                     }
-                    if (CFG_ENABLE_LONG_PRESS == 1) {
+                    if (CFG.enable_long_press == 1) {
                         return KEYHOOK_BREAK;
                     }
-                    if (CFG_ENABLE_LONG_PRESS == 2) {
+                    if (CFG.enable_long_press == 2) {
                         CSM_MoveToTop(CSM_root()->idle_id, -1);
                         return KEYHOOK_BREAK;
                     }
-                    if (CFG_ENABLE_LONG_PRESS == 4) {
+                    if (CFG.enable_long_press == 4) {
                         CSM_MoveToTop(CSM_root()->idle_id, -1);
                         KbdLock();
                         return KEYHOOK_BREAK;
                     }
                     break;
                 }
-                if (CFG_ACTIVATION_STYLE == 0) {
-                    if (IsUnlocked() || CFG_ENABLE_LOCK) {
+                if (CFG.activation_style == 0) {
+                    if (IsUnlocked() || CFG.enable_lock) {
                         CSM_Create();
                     }
                     return KEYHOOK_BREAK;
@@ -519,14 +512,14 @@ void OnClose(CSM_RAM *data) {
 }
 
 void DoSplices(GBSTMR *) {
-    SHOW_DAEMONS = CFG_SHOW_DAEMONS;
+    SHOW_DAEMONS = CFG.show_daemons;
     LockSched();
     if (!AddKeybMsgHook_end((void*)KeyHook)) {
         ShowMSG(1, (int)"Невозможно зарегистрировать обработчик!");
         SUBPROC(kill_elf);
     }
     else {
-        if (CFG_ENABLE_HELLO_MSG) {
+        if (CFG.enable_hello_msg) {
             ShowMSG(1, (int)"XTask3 установлен!");
         }
         IDLE_EnableHook(OnMessage, OnClose);
