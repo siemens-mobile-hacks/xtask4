@@ -5,11 +5,9 @@
 #include "menu_bookmarks.h"
 #include "../nl.h"
 #include "../csm.h"
+#include "../dialogs.h"
 #include "../csm_utils.h"
 
-extern int REALD_COUNT, NSD_COUNT;
-extern int SHOW_DAEMONS;
-extern int GetNumberOfDialogs();
 
 char EXTRA_HEADER[16];
 
@@ -96,7 +94,7 @@ void GHook(GUI *gui, int cmd) {
     if (cmd == 0xA) { // focus
         DisableIDLETMR();
         int cursor = GetCurMenuItem(gui);
-        int dialogs = GetNumberOfDialogs();
+        int dialogs = BuildDialogList();
         Menu_SetItemCountDyn(gui, dialogs);
         if (cursor >= dialogs) {
             SetCursorToMenuItem(gui, dialogs - 1);

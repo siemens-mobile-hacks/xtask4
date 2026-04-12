@@ -3,10 +3,8 @@
 #include "nl.h"
 #include "csm.h"
 #include "config.h"
+#include "dialogs.h"
 #include "csm_list.h"
-
-extern int REALD_COUNT;
-extern int GetNumberOfDialogs();
 
 const int minus11 = -11;
 int CSM_ID;
@@ -16,7 +14,7 @@ static void OnCreate(CSM_RAM *data) {
     csm->csm.state = 0;
     csm->csm.unk1 = 0;
     ReadCSMList();
-    GetNumberOfDialogs();
+    BuildDialogList();
     csm->gui_id = UI_Create(csm);
 }
 
