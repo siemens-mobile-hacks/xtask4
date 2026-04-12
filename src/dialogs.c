@@ -43,17 +43,14 @@ static char *FindCSMName(const CSM_RAM *csm) {
 }
 
 int BuildDialogList() {
-    int count = 0;
-    int c;
-    int i;
-    CSM_RAM *icsm;
     WSHDR *ws;
-    char ss[64];
-
-    void *ircsm = FindCSMbyID(CSM_root()->idle_id);
-    ClearNL();
-    //Find new style daemons
+    int count = 0;
     NSD_COUNT = 0;
+    ClearNL();
+
+    CSM_RAM *icsm = NULL;
+    void *ircsm = FindCSMbyID(CSM_root()->idle_id);
+    //Find new style daemons
     if (SHOW_DAEMONS) {
         icsm = ((CSM_RAM*)(CSM_root()->csm_q->csm.first))->next;
         while (((unsigned int)(icsm->constr) >> 27) == 0x15) {
@@ -95,7 +92,7 @@ int BuildDialogList() {
                 else {
                     s = FindCSMName(icsm);
 #ifdef NEWSGOLD
-                    if (strcmpi(s, "Java") == 0) {
+                    if (strncmp(s, "Java", 4) == 0) {
                         int bearer = ((RB_CSM*)icsm)->bearer;
                         int j = ((RB_CSM*)icsm)->param_R1;
                         if (bearer == 2) continue;
@@ -159,8 +156,9 @@ int BuildDialogList() {
 	  }
 #endif
                     if (strncmp(s, "!SKIP!", 6) != 0) {
+                        char ss[64];
                         ws = AllocWS(64);
-                        i = 0;
+                        int i = 0, c = 0;
                         while ((c = *s++) >= ' ') {
                             if (i < (sizeof(ss) - 1)) ss[i++] = c;
                         }

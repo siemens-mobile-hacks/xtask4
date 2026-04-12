@@ -7,7 +7,7 @@ NAMELIST *volatile NLTOP;
 void AddNL(WSHDR *ws, int is_daemon) {
     NAMELIST *nnl = malloc(sizeof(NAMELIST));
     nnl->name = ws;
-    nnl->next = 0;
+    nnl->next = NULL;
     nnl->is_daemon = is_daemon;
     LockSched();
     if (!NLTOP) {
@@ -20,12 +20,11 @@ void AddNL(WSHDR *ws, int is_daemon) {
     UnlockSched();
 }
 
-NAMELIST *GetNLItem(int curitem) {
-    NAMELIST *nl;
-    nl = NLTOP;
+NAMELIST *GetNLItem(int id) {
+    NAMELIST *nl = NLTOP;
     int i = 0;
     while (nl) {
-        if (i == curitem) break;
+        if (i == id) break;
         i++;
         nl = nl->next;
     }

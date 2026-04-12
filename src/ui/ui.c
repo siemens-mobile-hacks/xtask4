@@ -70,28 +70,28 @@ static int OnKey(GUI *gui, GUI_MSG *msg) {
             case '#':
                 CSM_Close(GetCurMenuItem(gui));
                 return 0;
-        case '*':
-            SHOW_DAEMONS = !SHOW_DAEMONS;
-            RefreshGUI();
-            return 0;
-        case LEFT_SOFT:
-            MenuOptions_Create(csm);
-            return -1;
-        case ENTER_BUTTON:
-            NAMELIST *nl = GetNLItem(GetCurMenuItem(gui));
-            if (!nl->is_daemon) {
-                CSM_MoveToTop(((CSM_RAM*)(nl->p))->id, -1);
-            }
-            return 1;
-        case RIGHT_SOFT:
-            return 1;
+            case '*':
+                SHOW_DAEMONS = !SHOW_DAEMONS;
+                RefreshGUI();
+                return 0;
+            case LEFT_SOFT:
+                MenuOptions_Create(csm);
+                return -1;
+            case ENTER_BUTTON:
+                NAMELIST *nl = GetNLItem(GetCurMenuItem(gui));
+                if (!nl->is_daemon) {
+                    CSM_MoveToTop(((CSM_RAM*)(nl->p))->id, -1);
+                }
+                return 1;
+            case RIGHT_SOFT:
+                return 1;
         }
     }
     return 0;
 }
 
 void GHook(GUI *gui, int cmd) {
-    if (cmd == 0xA) { // focus
+    if (cmd == UI_CMD_FOCUS) { // focus
         DisableIDLETMR();
         int cursor = GetCurMenuItem(gui);
         int dialogs = BuildDialogList();
@@ -99,7 +99,7 @@ void GHook(GUI *gui, int cmd) {
         if (cursor >= dialogs) {
             SetCursorToMenuItem(gui, dialogs - 1);
         }
-    } else if (cmd == 0x09) { //unfocus
+    } else if (cmd == UI_CMD_UNFOCUS) { //unfocus
         // ClearNL();
     }
 }

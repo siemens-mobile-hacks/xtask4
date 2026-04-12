@@ -103,10 +103,10 @@ void CSM_MoveToTop(int id, int top_id) {
 }
 
 void CSM_Close(int nl_id) {
-    NAMELIST *nl = GetNLItem(nl_id);
+    const NAMELIST *nl = GetNLItem(nl_id);
     if (nl) {
         if (REALD_COUNT + NSD_COUNT > 0) {
-            int csm_id = ((CSM_RAM*)(nl->p))->id;
+            const int csm_id = ((CSM_RAM*)(nl->p))->id;
             if (csm_id != CSM_root()->idle_id) {
                 CloseCSM(csm_id);
             }
@@ -115,11 +115,13 @@ void CSM_Close(int nl_id) {
 }
 
 void CSM_CloseAll() {
-    NAMELIST *nl = NLTOP;
+    const NAMELIST *nl = NLTOP;
     while (nl) {
-        int csm_id = ((CSM_RAM*)(nl->p))->id;
-        if (csm_id != CSM_root()->idle_id) {
-            CloseCSM(csm_id);
+        if (!nl->is_daemon) {
+            const int csm_id = ((CSM_RAM*)(nl->p))->id;
+            if (csm_id != CSM_root()->idle_id) {
+                CloseCSM(csm_id);
+            }
         }
         nl = nl->next;
     }
