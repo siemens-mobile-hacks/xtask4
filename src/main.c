@@ -161,10 +161,10 @@ int GetNumberOfDialogs() {
                         case 3:
                             switch (j) {
                             case 2:
-                                wsprintf(ws, "Phone Java");
+                                wsprintf(ws, "Java Slot 1");
                                 break;
                             case 3:
-                                wsprintf(ws, "User Java");
+                                wsprintf(ws, "Java Slot 2");
                                 break;
                             default:
                                 wsprintf(ws, "Unknown Java (%d)", j);
