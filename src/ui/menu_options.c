@@ -85,6 +85,6 @@ static const MENU_DESC MENU_D = {
 };
 
 int MenuOptions_Create(MAIN_CSM *csm) {
-    memcpy(&(HEADER_D.rc), GetOptionsHeaderRect(), sizeof(RECT));
+    memcpy(&(HEADER_D.rc), GetOptionsHeaderRECT(), sizeof(RECT));
     return CreateMenu(1, 0, &MENU_D, &HEADER_D, 0, ITEMS_N, csm, NULL);
 }

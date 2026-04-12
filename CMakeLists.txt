@@ -13,6 +13,7 @@ add_executable(XTask4_ELKA ${SOURCES})
 target_sdk_setup(XTask4_ELKA ELKA)
 target_link_directories(XTask4_ELKA PUBLIC "../libsie/build/lib/ELKA")
 target_compile_options(XTask4_ELKA BEFORE PUBLIC -std=c11 -Wall -Werror)
+set_target_properties(XTask4_ELKA PROPERTIES OUTPUT_NAME "XTask4")
 
 add_executable(XTask4_NSG ${SOURCES})
 target_sdk_setup(XTask4_NSG NSG)
