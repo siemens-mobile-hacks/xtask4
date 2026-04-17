@@ -105,9 +105,9 @@ int BuildDialogList() {
                                 wsprintf(ws, "Jam %d", j);
                             break;
                             case 3:
-                                if (j == 2 || j == 3 || j == 4) {
+                                if (j >= 2 && j <= 4) {
                                     const int slot_id = (j > 2);
-                                    const char *java_name = GetLastJavaApplication(slot_id);
+                                    const char *java_name = GetLastJavaApplication(icsm);
                                     if (java_name) {
                                         wsprintf(ws, "Java: %t", java_name);
                                     } else if (slot_id == 0) {
